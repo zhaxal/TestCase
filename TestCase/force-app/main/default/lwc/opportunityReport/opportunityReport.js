@@ -3,10 +3,15 @@ import getOpportunitiesServer from "@salesforce/apex/OpportunityReportPageContro
 
 export default class OpportunityReport extends LightningElement {
   @track opportunities = [];
+
   budgetYear = "2026";
   showSpinner = false;
-
   stageValue = "";
+  closeDateValue = "";
+  opportunityText = "";
+  defaultSortDirection = "asc";
+  sortDirection = "asc";
+  sortedBy;
 
   get stageOptions() {
     return [
@@ -24,16 +29,40 @@ export default class OpportunityReport extends LightningElement {
     ];
   }
 
-  closeDateValue = "";
-
-  handleChangeCloseDate(event) {
-    this.closeDateValue = event.detail.value;
+  get yearOptions() {
+    const currentYear = new Date().getFullYear();
+    const options = [{ label: "All Years", value: "all" }];
+    for (let i = -2; i <= 2; i++) {
+      const year = (currentYear + i).toString();
+      options.push({ label: year, value: year });
+    }
+    return options;
   }
 
+  columns = [
+    { label: "Name", fieldName: "Name", sortable: true },
+    { label: "Fiscal Year", fieldName: "FiscalYear", sortable: true },
+    { label: "Amount", fieldName: "Amount", type: "currency", sortable: true },
+    { label: "Stage", fieldName: "StageName" },
+    { label: "Description", fieldName: "Description" },
+    { label: "Close Date", fieldName: "CloseDate" },
+  ];
+
+  connectedCallback() {
+    this.doInit();
+  }
+
+  handleChange(event) {
+    this.budgetYear = event.detail.value;
+    this.doInit();
+  }
 
   handleChangeStage(event) {
     this.stageValue = event.detail.value;
+  }
 
+  handleChangeCloseDate(event) {
+    this.closeDateValue = event.detail.value;
   }
 
   handleFilter() {
@@ -47,50 +76,18 @@ export default class OpportunityReport extends LightningElement {
     this.doInit();
   }
 
-  columns = [
-    { label: "Name", fieldName: "Name",sortable: true, },
-    { label: "Fiscal Year", fieldName: "FiscalYear",sortable: true, },
-    { label: "Amount", fieldName: "Amount", type: "currency",sortable: true, },
-    {
-      label: "Stage",
-      fieldName: "StageName",
-      type: "picklist",
-    },
-    {
-      label: "Description",
-      fieldName: "Description",
-
-    },
-    {
-      label: "Close Date",
-      fieldName: "CloseDate",
-    },
-  ];
-
-    defaultSortDirection = 'asc';
-    sortDirection = 'asc';
-    sortedBy;
-
-  get yearOptions() {
-    const currentYear = new Date().getFullYear();
-    const options = [{ label: "All Years", value: "all" }];
-    for (let i = -2; i <= 2; i++) {
-      const year = (currentYear + i).toString();
-      options.push({ label: year, value: year });
-    }
-    return options;
+  handleSort(event) {
+    this.sortedBy = event.detail.fieldName;
+    this.sortDirection = event.detail.sortDirection;
+    const reverse = this.sortDirection === "desc";
+    this.opportunities = [...this.opportunities].sort((a, b) => {
+      const valA = a[this.sortedBy] ?? "";
+      const valB = b[this.sortedBy] ?? "";
+      return reverse
+        ? valB > valA ? 1 : valB < valA ? -1 : 0
+        : valA > valB ? 1 : valA < valB ? -1 : 0;
+    });
   }
-
-  connectedCallback() {
-    this.doInit();
-  }
-
-  handleChange(event) {
-    this.budgetYear = event.detail.value;
-    this.doInit();
-  }
-
-  opportunityText = ""
 
   async doInit() {
     try {

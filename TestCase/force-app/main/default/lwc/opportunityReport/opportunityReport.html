@@ -6,29 +6,44 @@
         label="Year"
         value="{budgetYear}"
         options="{yearOptions}"
-        onchange="{handleYearChange}"
-      >
-      </lightning-combobox>
+        onchange="{handleChange}"
+      ></lightning-combobox>
     </div>
 
     <div class="slds-p-around_medium lgc-bg">
-        <lightning-select
-            name="stage"
-            label="Stage"
-            value={stageValue}
-            options={stageOptions}
-            onchange={handleChangeStage}
-            >
-        </lightning-select>
+      <lightning-select
+        name="stage"
+        label="Stage"
+        value={stageValue}
+        options={stageOptions}
+        onchange={handleChangeStage}
+      ></lightning-select>
     </div>
 
     <div class="slds-p-around_medium lgc-bg">
-        <lightning-input type="date" label="Enter close date" value={closeDateValue} onchange={handleChangeCloseDate}></lightning-input>
+      <lightning-input
+        type="date"
+        label="Enter close date"
+        value={closeDateValue}
+        onchange={handleChangeCloseDate}
+      ></lightning-input>
     </div>
 
     <div class="slds-p-around_medium">
-      <lightning-button variant="neutral" label="Clear Filters" title="Clear filters" onclick={clearFilters} class="slds-m-right_x-small"></lightning-button>
-      <lightning-button variant="base" label="Filter" title="Filter opportunities" onclick={handleFilter} class="slds-m-left_x-small"></lightning-button>
+      <lightning-button
+        variant="neutral"
+        label="Clear Filters"
+        title="Clear filters"
+        onclick={clearFilters}
+        class="slds-m-right_x-small"
+      ></lightning-button>
+      <lightning-button
+        variant="base"
+        label="Filter"
+        title="Filter opportunities"
+        onclick={handleFilter}
+        class="slds-m-left_x-small"
+      ></lightning-button>
     </div>
 
     <div class="slds-p-around_medium">
@@ -37,12 +52,17 @@
         data="{opportunities}"
         columns="{columns}"
         hide-checkbox-column
-      >
-      </lightning-datatable>
+        default-sort-direction="{defaultSortDirection}"
+        sorted-direction="{sortDirection}"
+        sorted-by="{sortedBy}"
+        onsort="{handleSort}"
+      ></lightning-datatable>
     </div>
 
     <div class="slds-p-around_medium">
-        <p><lightning-formatted-text value="{opportunityText}" ></lightning-formatted-text></p>
+      <p>
+        <lightning-formatted-text value="{opportunityText}"></lightning-formatted-text>
+      </p>
     </div>
 
     <template lwc:if="{showSpinner}">
