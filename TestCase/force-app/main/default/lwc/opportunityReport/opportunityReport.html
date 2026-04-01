@@ -1,26 +1,52 @@
 <template>
-    <lightning-card title="Opportunity Report" icon-name="standard:opportunity">
-        <div slot="actions">
-            <lightning-combobox
-                    name="budgetYear"
-                    label="Year"
-                    value={budgetYear}
-                    options={yearOptions}
-                    onchange={handleChange}>
-            </lightning-combobox>
-        </div>
+  <lightning-card title="Opportunity Report" icon-name="standard:opportunity">
+    <div slot="actions">
+      <lightning-combobox
+        name="budgetYear"
+        label="Year"
+        value="{budgetYear}"
+        options="{yearOptions}"
+        onchange="{handleYearChange}"
+      >
+      </lightning-combobox>
+    </div>
 
-        <div class="slds-p-around_medium">
-            <lightning-datatable
-                    key-field="Id"
-                    data={opportunities}
-                    columns={columns}
-                    hide-checkbox-column>
-            </lightning-datatable>
-        </div>
+    <div class="slds-p-around_medium lgc-bg">
+        <lightning-select
+            name="stage"
+            label="Stage"
+            value={stageValue}
+            options={stageOptions}
+            onchange={handleChangeStage}
+            >
+        </lightning-select>
+    </div>
 
-        <template lwc:if={showSpinner}>
-            <lightning-spinner alternative-text="Loading"></lightning-spinner>
-        </template>
-    </lightning-card>
+    <div class="slds-p-around_medium lgc-bg">
+        <lightning-input type="date" label="Enter close date" value={closeDateValue} onchange={handleChangeCloseDate}></lightning-input>
+    </div>
+
+    <div class="slds-p-around_medium">
+      <lightning-button variant="neutral" label="Clear Filters" title="Clear filters" onclick={clearFilters} class="slds-m-right_x-small"></lightning-button>
+      <lightning-button variant="base" label="Filter" title="Filter opportunities" onclick={handleFilter} class="slds-m-left_x-small"></lightning-button>
+    </div>
+
+    <div class="slds-p-around_medium">
+      <lightning-datatable
+        key-field="Id"
+        data="{opportunities}"
+        columns="{columns}"
+        hide-checkbox-column
+      >
+      </lightning-datatable>
+    </div>
+
+    <div class="slds-p-around_medium">
+        <p><lightning-formatted-text value="{opportunityText}" ></lightning-formatted-text></p>
+    </div>
+
+    <template lwc:if="{showSpinner}">
+      <lightning-spinner alternative-text="Loading"></lightning-spinner>
+    </template>
+  </lightning-card>
 </template>
